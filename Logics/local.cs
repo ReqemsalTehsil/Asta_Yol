@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class local : MonoBehaviour
@@ -8,6 +6,9 @@ public class local : MonoBehaviour
     private static bool[] answer_flag = new bool [10];
     private static bool[] mistake = new bool [10];
 
+    //local data to be installed to cache 
+
+    public static byte mistakes=0;
 
     public static bool isAnswered(byte i){
         return answer_flag[i];
@@ -21,6 +22,7 @@ public class local : MonoBehaviour
     }
     public static void setMistake(byte i){
         mistake[i] = true;
+        mistakes++;
     }
     public static byte getUnasweredQUestionNumber(){
         for(byte i = (byte)(changeQuestion.currentQuestionNumber+1); i < 10; i++){
