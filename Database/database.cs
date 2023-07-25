@@ -75,7 +75,7 @@ public class database : MonoBehaviour
             */
             }
             dataLoadedAt[i] = true;
-if(isLoaded()){Debug.Log("DATA IS COLLECTED!!!!");dataIsLoaded = true;} // flag of completely loaded data
+        if(isLoaded()){Debug.Log("DATA IS COLLECTED!!!!");dataIsLoaded = true;} // flag of completely loaded data
         }
     }
 

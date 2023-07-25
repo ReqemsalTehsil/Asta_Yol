@@ -9,7 +9,8 @@ public GameObject obj;
 
 bool continueClicked = false;
 void Update(){
-    if(local.mistakes == 3 && !continueClicked)obj.SetActive(true);
+    if(local.mistakes == 2 && !continueClicked)obj.SetActive(true);
+    
 }
 }
 //file should be hung on obj itself

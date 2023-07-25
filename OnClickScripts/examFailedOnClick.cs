@@ -8,7 +8,7 @@ public class examFailedOnClick : MonoBehaviour
     public GameObject obj; 
 
     public void davamEt(bool yes){
-        if(yes)obj.SetActive(false);
+        if(yes){obj.SetActive(false);Debug.Log("SDFJKHLSDKJHF");}
         else {
             // probably we will have to clean all data in :
             //local.clean()
