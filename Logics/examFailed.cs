@@ -2,11 +2,14 @@ using UnityEngine;
 using System;
 
 // we will need obj reference;
+public class examFailed : MonoBehaviour
+{
 
-private GameObject obj; 
+public GameObject obj; 
 
-public void Update(){
-    if(local.mistakes == 3)obj.SetActive(true);
+bool continueClicked = false;
+void Update(){
+    if(local.mistakes == 3 && !continueClicked)obj.SetActive(true);
 }
-
+}
 //file should be hung on obj itself
