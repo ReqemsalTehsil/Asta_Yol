@@ -11,8 +11,11 @@ public class changeQuestion : MonoBehaviour
     public static byte squareNumber;
     public GameObject[] square = new GameObject[10];
     public GameObject[] button = new GameObject[4];
-    public static byte currentQuestionNumber=0; // range: from 0 to 9
+    public static byte currentQuestionNumber; // range: from 0 to 9
     
+    void Start(){
+        currentQuestionNumber = 0;
+    }
     
     public void display(){
         database.updateRequested = true; // update info on question.text, button_text

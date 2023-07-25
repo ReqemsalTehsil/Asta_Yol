@@ -3,12 +3,18 @@ using UnityEngine;
 public class local : MonoBehaviour
 {
     // everything here should be cleaned after each time scene is loaded (indexes also)
-    private static bool[] answer_flag = new bool [10];
-    private static bool[] mistake = new bool [10];
+    private static bool[] answer_flag;
+    private static bool[] mistake;
 
     //local data to be installed to cache 
 
     public static byte mistakes=0;
+
+    public static void initialize(){
+        mistakes = 0;
+        answer_flag = new bool [10];
+        mistake = new bool [10];
+    }
 
     public static bool isAnswered(byte i){
         return answer_flag[i];

@@ -26,7 +26,7 @@ public class database : MonoBehaviour
         dbRef = FirebaseDatabase.DefaultInstance.RootReference; 
         question_text.text = "loading...";
         Indexes.generateRandomIndexes(); // generate "random" question indexes for database
-        
+        local.initialize();              // initialize local memory that soon should be saved in cache
         for(byte i=0; i < 10; i++)StartCoroutine(getData(i)); // getting data to fill question, answer, buttonText fields
         
         
