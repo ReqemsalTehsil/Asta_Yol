@@ -2,13 +2,15 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
 // we will need obj reference;
+
 public class examFailedOnClick : MonoBehaviour
 {
-
-    public GameObject obj; 
+    public GameObject timer;      // timer reference
+    public GameObject obj;        // messageBox reference
+    public GameObject homeButton; // button to return to menu will be activated if continue is pressed
 
     public void davamEt(bool yes){
-        if(yes){obj.SetActive(false);}
+        if(yes){obj.SetActive(false);timer.SetActive(false);homeButton.SetActive(true);} // removing timer with messageBox and adding homeButton;
         else {
             /*
                BEFORE GETTING MAIN MENU WE HAVE TO CLEAN AND RETURN SOME DATA TO INITIAL STATES
