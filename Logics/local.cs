@@ -46,6 +46,6 @@ public class local : MonoBehaviour
             if(!isAnswered(i))return i;
         }
 
-    return changeQuestion.currentQuestionNumber;
+    return 255; // will be achieved iff all questions are answered, so we return 255 as a flag for messageBox.
     }
 }

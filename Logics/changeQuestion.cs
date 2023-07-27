@@ -18,6 +18,8 @@ public class changeQuestion : MonoBehaviour
     }
     
     public void display(){
+        if(currentQuestionNumber == 255)return; // iff all questions are answered, we don`t need to request anything from our database
+
         database.updateRequested = true; // update info on question.text, button_text
         
         // if there is no text in the button -> button vanishes
@@ -64,6 +66,7 @@ public class changeQuestion : MonoBehaviour
         //
         if(to_number == 20)currentQuestionNumber = local.getUnasweredQUestionNumber();
         else currentQuestionNumber = to_number;
+        Debug.Log($"current q number is : {currentQuestionNumber}");
         display();
     }
 
