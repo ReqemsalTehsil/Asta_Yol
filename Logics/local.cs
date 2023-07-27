@@ -7,8 +7,8 @@ public class local : MonoBehaviour
     private static bool[] mistake;
 
     //local data to be installed to cache 
-
-    public static byte mistakes=0;
+    public static byte answers = 0;
+    public static byte mistakes = 0;
 
     public static void initialize(){
         mistakes = 0;
@@ -21,6 +21,7 @@ public class local : MonoBehaviour
     }
     public static void setAnswered(byte i){
         answer_flag[i] = true;
+        answers++;
     }
 
     public static bool isMistake(byte i){
@@ -31,7 +32,8 @@ public class local : MonoBehaviour
         mistakes++;
     }
     public static byte getUnasweredQUestionNumber(){
-       
+       if(answers == 9 && mistakes == 0)return 255; // messageBox flag
+
         for(byte i = (byte)(changeQuestion.currentQuestionNumber+1); i < 10; i++){
             if(!isAnswered(i))return i;
         }

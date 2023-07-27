@@ -11,8 +11,11 @@ public class examPassed : MonoBehaviour
     void Update()
     {
         if(changeQuestion.currentQuestionNumber == 255)obj.SetActive(true); // since 255 is like a flag that tells "all questions are answered and exam is passed"
-        
+
     }
 
+    void Start(){
+        obj.SetActive(false);
+    }
      
 }
