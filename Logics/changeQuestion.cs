@@ -50,8 +50,8 @@ public class changeQuestion : MonoBehaviour
    
     public void nextQuestion(byte to_number = 20){ // since 20th question won`t exist we can use it as a flag
         if(to_number == currentQuestionNumber)return;
-        //if question is unaswered,    we make text again black and white square
-        if(!local.isAnswered(currentQuestionNumber)){         
+        
+        if(!local.isAnswered(currentQuestionNumber)){         //if question is unaswered,    we make text again black and white square
         
         square[currentQuestionNumber].GetComponent<Image>().color = new Color32(255,255,255,255); // white square
 

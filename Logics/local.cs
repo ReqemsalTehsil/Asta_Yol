@@ -31,13 +31,21 @@ public class local : MonoBehaviour
         mistakes++;
     }
     public static byte getUnasweredQUestionNumber(){
+       
         for(byte i = (byte)(changeQuestion.currentQuestionNumber+1); i < 10; i++){
             if(!isAnswered(i))return i;
         }
         for(byte i = (byte)(changeQuestion.currentQuestionNumber-1); i>=0; i--){
+/*
+                 NOTION!!!!!!
+            since we are using byte 
+            after 0-- we will get 255, which ,in its turn, will create arrayIndexOutOfRange while checking isAnswered(255);
+            so we had to add simple if(i == 255)break;
+*/
+            if(i == 255)break;
             if(!isAnswered(i))return i;
         }
-        Debug.Log("gonna be filled");
+
     return changeQuestion.currentQuestionNumber;
     }
 }
