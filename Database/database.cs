@@ -19,7 +19,7 @@ public class database : MonoBehaviour
     //
     public static bool updateRequested = false;
     private static DatabaseReference dbRef;
-    public static byte numberOfQuestions = 36;
+    public static byte numberOfQuestions = 31;
     // Start is called before the first frame update
     void Start()
     {
@@ -51,7 +51,7 @@ public class database : MonoBehaviour
         return true;
     }
     public IEnumerator getData(byte i){
-        var question = dbRef.Child("Questions").Child((Indexes.getIndex(i)).ToString()).GetValueAsync();   // 
+        var question = dbRef.Child("Questions" + language.get()).Child((Indexes.getIndex(i)).ToString()).GetValueAsync();   // 
 
         yield return new WaitUntil(predicate: () => question.IsCompleted);
 
@@ -68,11 +68,11 @@ public class database : MonoBehaviour
            
 
             //test for collection of data
-            /*
+            
             Debug.Log("answer = " + getAnswer(i).ToString());
             Debug.Log("question: "+ getQuestion(i));
             Debug.Log("button: " + getButtonText(i,j));
-            */
+            
             }
             dataLoadedAt[i] = true;
         if(isLoaded()){Debug.Log("DATA IS COLLECTED!!!!");dataIsLoaded = true;} // flag of completely loaded data

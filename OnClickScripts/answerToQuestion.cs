@@ -1,13 +1,7 @@
-using UnityEngine.UI;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class changeColor : MonoBehaviour
+public class answerToQuestion : MonoBehaviour
 {
-     
-
     public static void ColorChange(int x){
         if(local.isAnswered(changeQuestion.currentQuestionNumber))return; // if question is already answered nothing happens by clicking the button
         //else
@@ -23,5 +17,4 @@ public class changeColor : MonoBehaviour
 
 
     }
-    
 }
