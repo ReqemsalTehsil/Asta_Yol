@@ -1,9 +1,7 @@
 using UnityEngine;
-
+using TMPro;
 public class language : MonoBehaviour
 {
-    public GameObject rus_pic;
-    public GameObject az_pic;
     private static string lang ="";
     /*
         language abbreviations
@@ -20,7 +18,8 @@ public class language : MonoBehaviour
         // abb should be one of abbreviations above
         if(lang == "")lang = "Ru";
         else lang = "";
-        Debug.Log("to language "+ lang);
+        
+        Debug.Log("Language: "+ lang);
     }
     public static string get(){
         
