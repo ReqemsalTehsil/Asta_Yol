@@ -18,17 +18,13 @@ public class loadScript : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-
-       if(!database.isLoaded())StartCoroutine(loading()); // will be added on repeating update for low internet connection
-
-    }
 
     
 //loading pic scripts 
 private IEnumerator loading()
 {
+    while(!database.removeLoading)
+    {
     firstLoaded(); 
 
     yield return new WaitForSeconds(1);
@@ -40,14 +36,15 @@ private IEnumerator loading()
     thirdLoaded();
 
     yield return new WaitForSeconds(1);
-
+    }
     allLoaded();
 }
 
 private void firstLoaded()
 {
     firstLoadingPic.SetActive(true);
-
+    secondLoadingPic.SetActive(false);
+    thirdLoadingPic.SetActive(false);
 }
 private void secondLoaded()
 {

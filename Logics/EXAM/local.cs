@@ -30,11 +30,16 @@ public class local : MonoBehaviour
         mistakes++;
     }
     public static byte getUnasweredQUestionNumber(){
-       if( (answers == 9 && mistakes == 0) || (answers == 10 && mistakes == 1))
-       {
-        Debug.Log("first case ");
-       return 255; // messageBox flag
-       }
+        if( (answers == 9 && mistakes == 0) || (answers == 10 && mistakes == 1)) //case when exam is passed so we summon messageBox
+        {
+            Debug.Log("first case ");
+        return 255; // messageBox flag
+        }
+
+        //if chosen answer is wrong, we simply don`t change question just stay in same one
+        if(isMistake(changeQuestion.currentQuestionNumber))return changeQuestion.currentQuestionNumber;
+
+        //finding closest unaswered question
         for(byte i = (byte)(changeQuestion.currentQuestionNumber+1); i < 10; i++){
             if(!isAnswered(i))return i;
         }

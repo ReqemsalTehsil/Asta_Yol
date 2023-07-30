@@ -24,7 +24,7 @@ public class changeQuestion : MonoBehaviour
         
         // if there is no text in the button -> button vanishes
         
-        Debug.Log(currentQuestionNumber);
+        
 
         //  IF NOT ANSWERED
         if(!local.isAnswered(currentQuestionNumber)){

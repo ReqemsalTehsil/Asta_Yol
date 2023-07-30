@@ -1,14 +1,17 @@
 using Firebase.Database;
 using UnityEngine;
+using UnityEngine.UI;
 using System;
 using System.Collections;
 using TMPro;
 
 public class database : MonoBehaviour
 {   
+    public static bool removeLoading =false;
     public static bool dataIsLoaded = false;
     private static bool[] dataLoadedAt = new bool[10];
     // some references to UI objects
+    public Image image; // for question
     public GameObject[] button = new GameObject[4];
     public TextMeshProUGUI question_text; // question text reference
     public TextMeshProUGUI[] button_text = new TextMeshProUGUI[4]; // button text reference
@@ -40,9 +43,11 @@ public class database : MonoBehaviour
    
     
     public void requestUpdate(){
-        Debug.Log("Hint : " + getHint(changeQuestion.currentQuestionNumber));
-        question_text.text = question[changeQuestion.currentQuestionNumber];
-        hint_text.text = hint[changeQuestion.currentQuestionNumber];
+        Debug.Log("Hint : " + getHint(changeQuestion.currentQuestionNumber)); 
+
+        question_text.text = question[changeQuestion.currentQuestionNumber]; // changing question 
+        hint_text.text = hint[changeQuestion.currentQuestionNumber]; // changing hint 
+        loadSprite(); // loading sprite
         for(int i=0 ; i < 4; i++){
             button_text[i].text = buttonText[changeQuestion.currentQuestionNumber, i];
             if(button_text[i].text == "")button[i].SetActive(false); // button vanishes if it has no text
@@ -80,7 +85,7 @@ public class database : MonoBehaviour
             
             }
             dataLoadedAt[i] = true;
-        if(isLoaded()){Debug.Log("DATA IS COLLECTED!!!!");dataIsLoaded = true; } // flag of completely loaded data
+        if(isLoaded()){Debug.Log("DATA IS COLLECTED!!!!");dataIsLoaded = true;removeLoading = true; } // flag of completely loaded data
 
         }
     }
@@ -103,5 +108,54 @@ public class database : MonoBehaviour
     }
 
 
+public void loadSprite()
+    {
+        byte index = Indexes.getIndex(changeQuestion.currentQuestionNumber); // index is added to correspond to db and resources folder
 
+        string dbIndex = index.ToString();
+
+        
+
+        //we will separate each category for corresponding width and height
+        
+        //cat 1
+            this.image.sprite = Resources.Load<Sprite>("pictures/cat1/" + dbIndex);
+            image.rectTransform.sizeDelta = new Vector2(139.15f,135.7f);
+        //cat 2 
+        if(this.image.sprite == null) //iff didn`t find in cat 1
+        {
+            this.image.sprite = Resources.Load<Sprite>("pictures/cat2/" + dbIndex);
+            image.rectTransform.sizeDelta = new Vector2(173,60);
+        }
+        //cat 3
+        if(this.image.sprite == null) //iff didn`t find in cat 2
+        {
+            this.image.sprite = Resources.Load<Sprite>("pictures/cat3/" + dbIndex);
+            image.rectTransform.sizeDelta = new Vector2(85,119);
+        }
+        //cat 4
+        if(this.image.sprite == null) //iff didn`t find in cat 3
+        {
+            this.image.sprite = Resources.Load<Sprite>("pictures/cat4/" + dbIndex);
+            image.rectTransform.sizeDelta = new Vector2(201,60);
+        }
+        //cat 5
+        if(this.image.sprite == null) //iff didn`t find in cat 4
+        {
+            this.image.sprite = Resources.Load<Sprite>("pictures/cat5/" + dbIndex);
+            image.rectTransform.sizeDelta = new Vector2(121,118);
+        }
+        //cat 6
+        if(this.image.sprite == null) //iff didn`t find in cat 1
+        {
+            this.image.sprite = Resources.Load<Sprite>("pictures/cat6/" + dbIndex);
+            image.rectTransform.sizeDelta = new Vector2(160,98);
+        }
+        //cat 7
+        if(this.image.sprite == null) //iff didn`t find in cat 1
+        {
+            this.image.sprite = Resources.Load<Sprite>("pictures/cat7/" + dbIndex);
+            image.rectTransform.sizeDelta = new Vector2(192,84);
+        }
+    }
 }

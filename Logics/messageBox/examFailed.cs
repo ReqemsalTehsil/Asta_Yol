@@ -6,7 +6,7 @@ public class examFailed : MonoBehaviour
 {
 
     public GameObject obj; 
-
+    public GameObject home;
     bool continueClicked;
 
     void Start(){
@@ -14,7 +14,7 @@ public class examFailed : MonoBehaviour
     }
 
     void Update(){
-        if(local.mistakes == 2 && !continueClicked){obj.SetActive(true);CountdownTimer.Stop();continueClicked = true;}
+        if(local.mistakes == 2 && !continueClicked){obj.SetActive(true);CountdownTimer.Stop();home.SetActive(true);continueClicked = true;}
 
         // we created message BOX
 

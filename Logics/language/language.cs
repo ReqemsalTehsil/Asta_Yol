@@ -2,7 +2,7 @@ using UnityEngine;
 using TMPro;
 public class language : MonoBehaviour
 {
-    private static string lang ="";
+    
     /*
         language abbreviations
         1. Az is "" - empthy string // by default
@@ -13,16 +13,25 @@ public class language : MonoBehaviour
     // Start is called before the first frame update
    
    
-    public static void change(){
+    public static void change()
+    {
         
         // abb should be one of abbreviations above
-        if(lang == "")lang = "Ru";
-        else lang = "";
+        if(get() == "")PlayerPrefs.SetString("language","Ru");
+        else PlayerPrefs.SetString("language","");
         
-        Debug.Log("Language: "+ lang);
+        Debug.Log("Language: "+ PlayerPrefs.GetString("language"));
+
     }
     public static string get(){
         
-        return lang;
+        return PlayerPrefs.GetString("language");
+    }
+
+    void Start()
+    {
+        //if it is first time game is uploaded 
+        // we have to initially set lang as "", which means Az by default
+        if(!PlayerPrefs.HasKey("language"))PlayerPrefs.SetString("language","");
     }
 }
