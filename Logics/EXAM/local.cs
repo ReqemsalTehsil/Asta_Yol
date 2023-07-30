@@ -7,19 +7,17 @@ public class local : MonoBehaviour
     private static bool[] mistake;
 
     //local data to be installed to cache 
-    public static byte answers = 0;
-    public static byte mistakes = 0;
+    public static byte answers;
+    public static byte mistakes;
 
-    public static void initialize(){
-        mistakes = 0;
-        answer_flag = new bool [10];
-        mistake = new bool [10];
-    }
 
-    public static bool isAnswered(byte i){
+
+    public static bool isAnswered(byte i)
+    {
         return answer_flag[i];
     }
-    public static void setAnswered(byte i){
+    public static void setAnswered(byte i)
+    {
         answer_flag[i] = true;
         answers++;
     }
@@ -32,8 +30,11 @@ public class local : MonoBehaviour
         mistakes++;
     }
     public static byte getUnasweredQUestionNumber(){
-       if(answers == 9 && mistakes == 0)return 255; // messageBox flag
-
+       if( (answers == 9 && mistakes == 0) || (answers == 10 && mistakes == 1))
+       {
+        Debug.Log("first case ");
+       return 255; // messageBox flag
+       }
         for(byte i = (byte)(changeQuestion.currentQuestionNumber+1); i < 10; i++){
             if(!isAnswered(i))return i;
         }
@@ -48,6 +49,17 @@ public class local : MonoBehaviour
             if(!isAnswered(i))return i;
         }
 
-    return 255; // will be achieved iff all questions are answered, so we return 255 as a flag for messageBox.
+    return changeQuestion.currentQuestionNumber; // will be achieved iff all questions are answered, so we return 255 as a flag for messageBox.
+    }
+
+
+    //local data will vanish as first frame of new loaded scene uploads
+    void Start()
+    {     // initialize local memory that soon should be saved in cache
+        //initialization
+        mistakes = 0;
+        answers = 0;
+        answer_flag = new bool [10];
+        mistake = new bool [10]; 
     }
 }

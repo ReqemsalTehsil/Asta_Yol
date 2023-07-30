@@ -5,7 +5,7 @@ using TMPro;
 public class changeQuestion : MonoBehaviour
 {
     public static byte clickedAnswer;
-    
+    public GameObject hint;
     public static bool buttonIsClicked = false;
     public static bool squareIsClicked = false;
     public static byte squareNumber;
@@ -24,11 +24,13 @@ public class changeQuestion : MonoBehaviour
         
         // if there is no text in the button -> button vanishes
         
-    
+        Debug.Log(currentQuestionNumber);
 
         //  IF NOT ANSWERED
         if(!local.isAnswered(currentQuestionNumber)){
 
+            //hint tip button is removed from screen
+            hint.SetActive(false);
             //CURRENT SQUARE TO BLACK 
             square[currentQuestionNumber].GetComponent<Image>().color = new Color32(0,0,0,255); //black square
             TextMeshProUGUI tmp_component = square[currentQuestionNumber].GetComponentInChildren<TextMeshProUGUI>();
@@ -41,6 +43,9 @@ public class changeQuestion : MonoBehaviour
 
         else{ // 1 - wrong, 2 - right
 
+            //hint tip button is generated
+             if(database.hasHint())hint.SetActive(true);
+             else hint.SetActive(false);
             //BUTTONS' COLOR
             for(byte i=0 ; i < 4; i++){
                 if(i == database.getAnswer())button[i].GetComponent<Image>().color = new Color32(43,248,80,255); // answer is green
@@ -67,6 +72,8 @@ public class changeQuestion : MonoBehaviour
         if(to_number == 20)currentQuestionNumber = local.getUnasweredQUestionNumber();
         else currentQuestionNumber = to_number;
         Debug.Log($"current q number is : {currentQuestionNumber}");
+        Debug.Log($"Total mistakes : {local.mistakes}");
+        Debug.Log($"Total answers : {local.answers}");
         display();
     }
 
