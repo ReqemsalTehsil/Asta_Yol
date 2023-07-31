@@ -10,18 +10,22 @@ public class database : MonoBehaviour
     public static bool removeLoading =false;
     public static bool dataIsLoaded = false;
     private static bool[] dataLoadedAt = new bool[10];
+
     // some references to UI objects
-    public Image image; // for question
+    public GameObject imageHolder; // to remove image if there is no
+    public Image image,image1; // for question
     public GameObject[] button = new GameObject[4];
     public TextMeshProUGUI question_text; // question text reference
     public TextMeshProUGUI[] button_text = new TextMeshProUGUI[4]; // button text reference
     public TextMeshProUGUI hint_text; // text for hint messageBox
+
     //variables that handle data from db
     private static string[] question =new string[10];
     private static string[,] buttonText = new string[10,4];
     private static byte[] answer = new byte[10];
     private static string[] hint = new string[10];
     //
+
     public static bool updateRequested = false;
     private static DatabaseReference dbRef;
     public static byte numberOfQuestions = 31;
@@ -115,47 +119,63 @@ public void loadSprite()
         string dbIndex = index.ToString();
 
         
-
+        float scaler = 1.2f; // scaler for full size pic
         //we will separate each category for corresponding width and height
         
+        this.imageHolder.SetActive(true);
         //cat 1
-            this.image.sprite = Resources.Load<Sprite>("pictures/cat1/" + dbIndex);
+            this.image.sprite = this.image1.sprite = Resources.Load<Sprite>("pictures/cat1/" + dbIndex);
             image.rectTransform.sizeDelta = new Vector2(139.15f,135.7f);
+
+            image1.rectTransform.sizeDelta = new Vector2(139.15f*scaler,135.7f*scaler); // for full size view
         //cat 2 
         if(this.image.sprite == null) //iff didn`t find in cat 1
         {
-            this.image.sprite = Resources.Load<Sprite>("pictures/cat2/" + dbIndex);
+            this.image.sprite = this.image1.sprite = Resources.Load<Sprite>("pictures/cat2/" + dbIndex);
             image.rectTransform.sizeDelta = new Vector2(173,60);
+
+            image1.rectTransform.sizeDelta = new Vector2(173*scaler,60*scaler); // for full size view
         }
         //cat 3
         if(this.image.sprite == null) //iff didn`t find in cat 2
         {
-            this.image.sprite = Resources.Load<Sprite>("pictures/cat3/" + dbIndex);
+            this.image.sprite = this.image1.sprite = Resources.Load<Sprite>("pictures/cat3/" + dbIndex);
             image.rectTransform.sizeDelta = new Vector2(85,119);
+
+            image1.rectTransform.sizeDelta = new Vector2(85*scaler,119*scaler); // for full size view
         }
         //cat 4
         if(this.image.sprite == null) //iff didn`t find in cat 3
         {
-            this.image.sprite = Resources.Load<Sprite>("pictures/cat4/" + dbIndex);
+            this.image.sprite = this.image1.sprite = Resources.Load<Sprite>("pictures/cat4/" + dbIndex);
             image.rectTransform.sizeDelta = new Vector2(201,60);
+
+            image1.rectTransform.sizeDelta = new Vector2(201*scaler,60*scaler); // for full size view
         }
         //cat 5
         if(this.image.sprite == null) //iff didn`t find in cat 4
         {
-            this.image.sprite = Resources.Load<Sprite>("pictures/cat5/" + dbIndex);
+            this.image.sprite = this.image1.sprite = Resources.Load<Sprite>("pictures/cat5/" + dbIndex);
             image.rectTransform.sizeDelta = new Vector2(121,118);
+
+            image1.rectTransform.sizeDelta = new Vector2(121*scaler,118*scaler); // for full size view
         }
         //cat 6
         if(this.image.sprite == null) //iff didn`t find in cat 1
         {
-            this.image.sprite = Resources.Load<Sprite>("pictures/cat6/" + dbIndex);
+            this.image.sprite = this.image1.sprite = Resources.Load<Sprite>("pictures/cat6/" + dbIndex);
             image.rectTransform.sizeDelta = new Vector2(160,98);
+
+            image1.rectTransform.sizeDelta = new Vector2(160*scaler,98*scaler); // for full size view
         }
         //cat 7
         if(this.image.sprite == null) //iff didn`t find in cat 1
         {
-            this.image.sprite = Resources.Load<Sprite>("pictures/cat7/" + dbIndex);
+            this.image.sprite = this.image1.sprite = Resources.Load<Sprite>("pictures/cat7/" + dbIndex);
             image.rectTransform.sizeDelta = new Vector2(192,84);
+
+            image1.rectTransform.sizeDelta = new Vector2(192*scaler,84*scaler); // for full size view
         }
+        if(this.image.sprite == null)imageHolder.SetActive(false);
     }
 }

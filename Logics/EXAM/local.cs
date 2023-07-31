@@ -9,7 +9,7 @@ public class local : MonoBehaviour
     //local data to be installed to cache 
     public static byte answers;
     public static byte mistakes;
-
+    public static byte[] chosen_answer;
 
 
     public static bool isAnswered(byte i)
@@ -28,6 +28,14 @@ public class local : MonoBehaviour
     public static void setMistake(byte i){
         mistake[i] = true;
         mistakes++;
+    }
+    public static void SetAnswer(byte x)
+    {
+        chosen_answer[changeQuestion.currentQuestionNumber] = x;
+    }
+    public static byte getAnswer(byte i)
+    {
+        return chosen_answer[i];
     }
     public static byte getUnasweredQUestionNumber(){
         if( (answers == 9 && mistakes == 0) || (answers == 10 && mistakes == 1)) //case when exam is passed so we summon messageBox
@@ -66,5 +74,6 @@ public class local : MonoBehaviour
         answers = 0;
         answer_flag = new bool [10];
         mistake = new bool [10]; 
+        chosen_answer = new byte [10];
     }
 }
