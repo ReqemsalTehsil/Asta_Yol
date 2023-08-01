@@ -14,6 +14,11 @@ public class loadScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        database.removeLoading = false;
+        database.dataIsLoaded = false;
+
+        
+        Debug.Log("loading starts");
         StartCoroutine(loading());
     }
 
@@ -25,6 +30,7 @@ private IEnumerator loading()
 {
     while(!database.removeLoading)
     {
+        Debug.Log("loading starts");
     firstLoaded(); 
 
     yield return new WaitForSeconds(1);

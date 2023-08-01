@@ -9,8 +9,7 @@ public class database : MonoBehaviour
 {   
     public static bool removeLoading =false;
     public static bool dataIsLoaded = false;
-    private static bool[] dataLoadedAt = new bool[10];
-
+     
     // some references to UI objects
     public GameObject imageHolder; // to remove image if there is no
     public Image image,image1; // for question
@@ -32,6 +31,14 @@ public class database : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //reinitialization
+
+        question =new string[10];
+        buttonText = new string[10,4];
+        answer = new byte[10];
+        hint = new string[10];
+        // 
+
         dbRef = FirebaseDatabase.DefaultInstance.RootReference; 
         question_text.text = "loading...";
         Indexes.generateRandomIndexes(); // generate "random" question indexes for database
@@ -47,8 +54,7 @@ public class database : MonoBehaviour
    
     
     public void requestUpdate(){
-        Debug.Log("Hint : " + getHint(changeQuestion.currentQuestionNumber)); 
-
+       
         question_text.text = question[changeQuestion.currentQuestionNumber]; // changing question 
         hint_text.text = hint[changeQuestion.currentQuestionNumber]; // changing hint 
         loadSprite(); // loading sprite
@@ -61,7 +67,7 @@ public class database : MonoBehaviour
     }
     
     public static bool isLoaded(){
-        for(byte i =0; i < 10; i++)if(dataLoadedAt[i] == false)return false;
+        for(byte i =0; i < 10; i++)if(question[i] == null)return false;
         return true;
     }
     public IEnumerator getData(byte i)
@@ -88,8 +94,8 @@ public class database : MonoBehaviour
             
             
             }
-            dataLoadedAt[i] = true;
-        if(isLoaded()){Debug.Log("DATA IS COLLECTED!!!!");dataIsLoaded = true;removeLoading = true; } // flag of completely loaded data
+            
+                    if(isLoaded()){Debug.Log("DATA IS COLLECTED!!!!");dataIsLoaded = true;removeLoading = true; } // flag of completely loaded data
 
         }
     }

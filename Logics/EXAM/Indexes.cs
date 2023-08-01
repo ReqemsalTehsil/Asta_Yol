@@ -12,7 +12,7 @@ public class Indexes : MonoBehaviour
             byte index =  Convert.ToByte(rand.Next(0, numberOfQuestions));
             while(contain(indexes, index))index =  Convert.ToByte(rand.Next(0, numberOfQuestions));
             indexes[i] = index;
-            Debug.Log($"index {i} = {index}");
+            //Debug.Log($"index {i} = {index}");
             
         }
     }

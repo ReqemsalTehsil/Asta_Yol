@@ -10,6 +10,9 @@ public class examFailedOnClick : MonoBehaviour
     public GameObject homeButton; // button to return to menu will be activated if continue is pressed
 
     public void davamEt(bool yes){
+        // saving mistake
+        PlayerPrefs.SetInt("fail", PlayerPrefs.GetInt("fail", 0) + 1);
+
         if(yes){obj.SetActive(false);timer.SetActive(false);homeButton.SetActive(true);} // removing timer with messageBox and adding homeButton;
         else {
             /*

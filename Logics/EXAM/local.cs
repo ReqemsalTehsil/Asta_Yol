@@ -38,9 +38,10 @@ public class local : MonoBehaviour
         return chosen_answer[i];
     }
     public static byte getUnasweredQUestionNumber(){
-        if( (answers == 9 && mistakes == 0) || (answers == 10 && mistakes == 1)) //case when exam is passed so we summon messageBox
+        if( (answers == 9 && mistakes == 0) || (answers == 10 && mistakes == 1)) 
         {
-            Debug.Log("first case ");
+            //case when exam is passed so we summon messageBox
+            PlayerPrefs.SetInt("pass", PlayerPrefs.GetInt("pass", 0) + 1);
         return 255; // messageBox flag
         }
 
