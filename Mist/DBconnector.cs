@@ -5,12 +5,14 @@ using System;
 using System.Collections;
 using TMPro;
 
-public class database : MonoBehaviour
+public class DBconnector : MonoBehaviour
 {   
     public static bool removeLoading =false;
     public static bool dataIsLoaded = false;
      
     // some references to UI objects
+    public GameObject rightButton;
+    public GameObject leftButton;
     public GameObject imageHolder; // to remove image if there is no
     public Image image,image1; // for question
     public GameObject[] button = new GameObject[4];
@@ -31,10 +33,6 @@ public class database : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
-        //add exam to statistics 
-        PlayerPrefs.SetInt("exams", PlayerPrefs.GetInt("exams", 0) + 1);
-
         //reinitialization
 
         question =new string[10];
@@ -45,12 +43,12 @@ public class database : MonoBehaviour
 
         dbRef = FirebaseDatabase.DefaultInstance.RootReference; 
         question_text.text = "loading...";
-        Indexes.generateRandomIndexes(); // generate "random" question indexes for database
 
-        
-        for(byte i=0; i < 10; i++)
+        //
+
+        for(byte i = 0; i < JsonReadWrite.getMistakes().Count; i++)
         {
-            Debug.Log($"for i th coroutine {Indexes.getIndex(i)}");
+
             StartCoroutine(getData(i)); // getting data to fill question, answer, buttonText fields
         }
         
@@ -62,12 +60,31 @@ public class database : MonoBehaviour
    
     
     public void requestUpdate(){
-       
-        question_text.text = question[changeQuestion.currentQuestionNumber]; // changing question 
-        hint_text.text = hint[changeQuestion.currentQuestionNumber]; // changing hint 
+        Debug.Log("requested UPDATE");
+        byte currentQuestionNumber = entry.currentQuestionNumber;
+        question_text.text = question[currentQuestionNumber]; // changing question 
+        hint_text.text = hint[currentQuestionNumber]; // changing hint 
         loadSprite(); // loading sprite
+        //
+        if(currentQuestionNumber == 0)leftButton.SetActive(false); // in the end we will only have leftbutton
+        else if(currentQuestionNumber == JsonReadWrite.getMistakes().Count-1)rightButton.SetActive(false); // at the beginning of list we have only rightbutton
+        else {rightButton.SetActive(true);leftButton.SetActive(true);} // in other cases we have both buttons
+        //
         for(int i=0 ; i < 4; i++){
-            button_text[i].text = buttonText[changeQuestion.currentQuestionNumber, i];
+
+            //adding colors if question is answered
+                if(mistLocal.isAnswered())
+                {
+                    if(i == getAnswer())button[i].GetComponent<Image>().color = new Color32(43,248,80,255); // answer is green
+                    else button[i].GetComponent<Image>().color = new Color32(250,65,65,255); //red 
+                }
+                else
+                {
+                    button[i].GetComponent<Image>().color = new Color32(255,255,255,255); // white button
+                }
+            //
+
+            button_text[i].text = buttonText[currentQuestionNumber, i];
             if(button_text[i].text == "")button[i].SetActive(false); // button vanishes if it has no text
             else button[i].SetActive(true); // display button if it has content
         }
@@ -75,12 +92,12 @@ public class database : MonoBehaviour
     }
     
     public static bool isLoaded(){
-        for(byte i =0; i < 10; i++)if(question[i] == null)return false;
+        for(byte i =0; i < JsonReadWrite.getMistakes().Count; i++)if(question[i] == null)return false;
         return true;
     }
     public IEnumerator getData(byte i)
     {
-        var question = dbRef.Child("Questions" + language.get()).Child((Indexes.getIndex(i)).ToString()).GetValueAsync();   // 
+        var question = dbRef.Child("Questions" + language.get()).Child(Convert.ToString(JsonReadWrite.getMistakeAt(i))).GetValueAsync();   // 
 
         yield return new WaitUntil(predicate: () => question.IsCompleted);
 
@@ -100,8 +117,8 @@ public class database : MonoBehaviour
 
             //test for collection of data
             
-            
             }
+            Debug.Log(getQuestion(i));
             
                     if(isLoaded()){Debug.Log("DATA IS COLLECTED!!!!");dataIsLoaded = true;removeLoading = true; } // flag of completely loaded data
 
@@ -111,7 +128,7 @@ public class database : MonoBehaviour
     //getters and setters are required since in IEnumberator we cannot use indexes (idk why...)
     private string getQuestion(byte i){return question[i];}
     private byte getAnswer(byte i){return answer[i];}
-    public static byte getAnswer(){return answer[changeQuestion.currentQuestionNumber];} // some kinda polymorphism for being called from outside
+    public static byte getAnswer(){return answer[entry.currentQuestionNumber];} // some kinda polymorphism for being called from outside
     private string getButtonText(byte i, byte j){return buttonText[i,j];}
     private static string getHint(byte i){return hint[i];}
 
@@ -128,10 +145,10 @@ public class database : MonoBehaviour
 
 public void loadSprite()
     {
-        byte index = Indexes.getIndex(changeQuestion.currentQuestionNumber); // index is added to correspond to db and resources folder
+        byte index = JsonReadWrite.getMistakeAt(entry.currentQuestionNumber); // index is added to correspond to db and resources folder
 
         string dbIndex = index.ToString();
-
+        //Debug.Log($"pic value is {Resources.Load<Sprite>("pictures/cat2/" + dbIndex)});
         
         float scaler = 1.2f; // scaler for full size pic
         //we will separate each category for corresponding width and height

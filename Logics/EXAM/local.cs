@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using System;
 public class local : MonoBehaviour
 {
     // everything here should be cleaned after each time scene is loaded (indexes also)
@@ -10,7 +10,6 @@ public class local : MonoBehaviour
     public static byte answers;
     public static byte mistakes;
     public static byte[] chosen_answer;
-
 
     public static bool isAnswered(byte i)
     {
@@ -28,6 +27,8 @@ public class local : MonoBehaviour
     public static void setMistake(byte i){
         mistake[i] = true;
         mistakes++;
+
+        addMistakeId(); // adding answered question Id to statistics
     }
     public static void SetAnswer(byte x)
     {
@@ -76,5 +77,13 @@ public class local : MonoBehaviour
         answer_flag = new bool [10];
         mistake = new bool [10]; 
         chosen_answer = new byte [10];
+
     }
+
+    public static void addMistakeId()
+    {
+        JsonReadWrite.saveMistakeToJson(Indexes.getIndex(changeQuestion.currentQuestionNumber));
+    }
+
+
 }

@@ -14,7 +14,16 @@ public class examFailed : MonoBehaviour
     }
 
     void Update(){
-        if(local.mistakes == 2 && !continueClicked){obj.SetActive(true);CountdownTimer.Stop();home.SetActive(true);continueClicked = true;}
+        if(local.mistakes == 2 && !continueClicked)
+        {
+            // saving mistake
+            PlayerPrefs.SetInt("fail", PlayerPrefs.GetInt("fail", 0) + 1);
+            obj.SetActive(true);
+            CountdownTimer.Stop();
+            home.SetActive(true);
+            continueClicked = true;
+            
+        }
 
         // we created message BOX
 
