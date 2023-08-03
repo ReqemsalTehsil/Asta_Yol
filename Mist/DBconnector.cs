@@ -11,6 +11,7 @@ public class DBconnector : MonoBehaviour
     public static bool dataIsLoaded = false;
      
     // some references to UI objects
+    public GameObject messageBox;
     public GameObject rightButton;
     public GameObject leftButton;
     public GameObject imageHolder; // to remove image if there is no
@@ -33,23 +34,26 @@ public class DBconnector : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //reinitialization
-
-        question =new string[10];
-        buttonText = new string[10,4];
-        answer = new byte[10];
-        hint = new string[10];
-        // 
-
-        dbRef = FirebaseDatabase.DefaultInstance.RootReference; 
-        question_text.text = "loading...";
-
-        //
-
-        for(byte i = 0; i < JsonReadWrite.getMistakes().Count; i++)
+        if(JsonReadWrite.getMistakes().Count == 0)messageBox.SetActive(true);
+        else
         {
+            //reinitialization
 
-            StartCoroutine(getData(i)); // getting data to fill question, answer, buttonText fields
+            question =new string[10];
+            buttonText = new string[10,4];
+            answer = new byte[10];
+            hint = new string[10];
+            // 
+
+            dbRef = FirebaseDatabase.DefaultInstance.RootReference; 
+            question_text.text = "loading...";
+
+            //
+            for(byte i = 0; i < JsonReadWrite.getMistakes().Count; i++)
+            {
+
+                StartCoroutine(getData(i)); // getting data to fill question, answer, buttonText fields
+            }
         }
         
     }

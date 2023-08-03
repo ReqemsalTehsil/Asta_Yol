@@ -60,7 +60,7 @@ public class JsonReadWrite : MonoBehaviour
         File.Delete(getPath("MistId"));
     }
 
-    public static void removeMistake(byte id)
+    public static void mistakeRemove(byte id)
     {
         Mistakes newMistakeList = new Mistakes(getMistakes()); // copying old data to new mistlist
 
