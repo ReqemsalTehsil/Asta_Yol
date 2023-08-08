@@ -50,7 +50,7 @@ public class database : MonoBehaviour
         
         for(byte i=0; i < 10; i++)
         {
-            Debug.Log($"for i th coroutine {Indexes.getIndex(i)}");
+           
             StartCoroutine(getData(i)); // getting data to fill question, answer, buttonText fields
         }
         
@@ -87,20 +87,19 @@ public class database : MonoBehaviour
         if(question.Exception != null)Debug.LogError(question.Exception);
         else if(question.Result == null)Debug.Log("Null");
         else{
-           // Debug.Log("Q: " + i.ToString() + " with real index: " + Indexes.getIndex(i).ToString());
+           
             DataSnapshot snapshot = question.Result;    //getting snapshot
             //assigning gotten data
+if(snapshot.Child("answers").Child("answer").Value == null || snapshot.Child("question").Value == null || snapshot.Child("hint").Value == null)Debug.LogError($"NULL RETURNED AT {Indexes.getIndex(i)}");
+
             setAnswer(Convert.ToByte(snapshot.Child("answers").Child("answer").Value.ToString()), i); // assigning answer
             setQuestion(Convert.ToString(snapshot.Child("question").Value).ToString(), i); // assigning question text   should be CHANGED!!!!
             setHint(Convert.ToString(snapshot.Child("hint").Value).ToString(), i); // taking hints
 
             for(byte j=0; j < 4; j++){
             setButtonText(snapshot.Child("answers").Child(j.ToString()).Value.ToString(), i, j); // setting buttons` texts 
-        
-
             //test for collection of data
-            
-            
+            if(snapshot.Child("answers").Child(j.ToString()).Value == null)Debug.LogError($"NULL RETURNED AT {Indexes.getIndex(i)}");
             }
             
                     if(isLoaded()){Debug.Log("DATA IS COLLECTED!!!!");dataIsLoaded = true;removeLoading = true; } // flag of completely loaded data

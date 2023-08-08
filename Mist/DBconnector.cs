@@ -7,8 +7,10 @@ using TMPro;
 
 public class DBconnector : MonoBehaviour
 {   
+    //some flags
     public static bool removeLoading =false;
     public static bool dataIsLoaded = false;
+    public static bool[] isDeleted;
      
     // some references to UI objects
     public GameObject messageBox;
@@ -38,7 +40,8 @@ public class DBconnector : MonoBehaviour
         else
         {
             //reinitialization
-
+            updateRequested = false;
+            isDeleted = new bool[10];
             question =new string[10];
             buttonText = new string[10,4];
             answer = new byte[10];
@@ -69,10 +72,15 @@ public class DBconnector : MonoBehaviour
         question_text.text = question[currentQuestionNumber]; // changing question 
         hint_text.text = hint[currentQuestionNumber]; // changing hint 
         loadSprite(); // loading sprite
-        //
-        if(currentQuestionNumber == 0)leftButton.SetActive(false); // in the end we will only have leftbutton
-        else if(currentQuestionNumber == JsonReadWrite.getMistakes().Count-1)rightButton.SetActive(false); // at the beginning of list we have only rightbutton
-        else {rightButton.SetActive(true);leftButton.SetActive(true);} // in other cases we have both buttons
+
+        // setting buttons to switch questions
+
+        if(currentQuestionNumber == 0){rightButton.SetActive(true);leftButton.SetActive(false);} // at the beginning of list we have only rightbutton
+        if(currentQuestionNumber == JsonReadWrite.getMistakes().Count-1){leftButton.SetActive(true);rightButton.SetActive(false);} // in the end we will only have leftbutton
+        if(currentQuestionNumber > 0 && currentQuestionNumber < JsonReadWrite.getMistakes().Count - 1){rightButton.SetActive(true);leftButton.SetActive(true);} // in other cases we have both buttons
+        
+        if(JsonReadWrite.getMistakes().Count == 1){leftButton.SetActive(false);rightButton.SetActive(false);}
+        
         //
         for(int i=0 ; i < 4; i++){
 
