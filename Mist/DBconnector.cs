@@ -8,11 +8,15 @@ using TMPro;
 public class DBconnector : MonoBehaviour
 {   
     //some flags
+    
+    public static bool updateData;
+    public static bool updateScreen;
     public static bool removeLoading =false;
     public static bool dataIsLoaded = false;
     public static bool[] isDeleted;
      
     // some references to UI objects
+    public GameObject hintImage;
     public GameObject messageBox;
     public GameObject rightButton;
     public GameObject leftButton;
@@ -24,92 +28,87 @@ public class DBconnector : MonoBehaviour
     public TextMeshProUGUI hint_text; // text for hint messageBox
 
     //variables that handle data from db
-    private static string[] question =new string[10];
-    private static string[,] buttonText = new string[10,4];
-    private static byte[] answer = new byte[10];
-    private static string[] hint = new string[10];
+    private static string question;
+    private static string[] buttonText = new string[4];
+    private static byte answer;
+    private static string hint;
     //
 
-    public static bool updateRequested = false;
     private static DatabaseReference dbRef;
     public static byte numberOfQuestions = 60;
     // Start is called before the first frame update
     void Start()
     {
-        if(JsonReadWrite.getMistakes().Count == 0)messageBox.SetActive(true);
+        updateScreen = false;
+        updateData = false;
+        entry.currentQuestionNumber = 0;
+        if(JsonReadWrite.getMistakes().Count == 0){messageBox.SetActive(true);removeLoading = true;}
         else
-        {
-            //reinitialization
-            updateRequested = false;
-            isDeleted = new bool[10];
-            question =new string[10];
-            buttonText = new string[10,4];
-            answer = new byte[10];
-            hint = new string[10];
+        {   
             // 
 
             dbRef = FirebaseDatabase.DefaultInstance.RootReference; 
             question_text.text = "loading...";
 
             //
-            for(byte i = 0; i < JsonReadWrite.getMistakes().Count; i++)
-            {
-
-                StartCoroutine(getData(i)); // getting data to fill question, answer, buttonText fields
-            }
+            
+            
+        loadData(); // getting data to fill question, answer, buttonText fields
         }
-        
     }
 
     void Update(){
-        if(updateRequested){requestUpdate(); updateRequested = false;}
+        if(updateData){loadData(); updateData = false;}
+        if(dataIsLoaded){updScreen(); dataIsLoaded = false;}
     }
    
+    public void loadData()
+    {
+        Debug.Log("Data is uploading");
+        StartCoroutine(getData(JsonReadWrite.getMistakeAt(entry.currentQuestionNumber)));
+    }
     
-    public void requestUpdate(){
-        Debug.Log("requested UPDATE");
+    public void updScreen()
+    {
+        Debug.Log("Screen Is UPdated");
         byte currentQuestionNumber = entry.currentQuestionNumber;
-        question_text.text = question[currentQuestionNumber]; // changing question 
-        hint_text.text = hint[currentQuestionNumber]; // changing hint 
+        
+        question_text.text = question; // changing question 
+        hint_text.text = hint; // changing hint 
         loadSprite(); // loading sprite
 
-        // setting buttons to switch questions
+        // setting Right/Left buttons to switch questions
 
         if(currentQuestionNumber == 0){rightButton.SetActive(true);leftButton.SetActive(false);} // at the beginning of list we have only rightbutton
         if(currentQuestionNumber == JsonReadWrite.getMistakes().Count-1){leftButton.SetActive(true);rightButton.SetActive(false);} // in the end we will only have leftbutton
         if(currentQuestionNumber > 0 && currentQuestionNumber < JsonReadWrite.getMistakes().Count - 1){rightButton.SetActive(true);leftButton.SetActive(true);} // in other cases we have both buttons
-        
         if(JsonReadWrite.getMistakes().Count == 1){leftButton.SetActive(false);rightButton.SetActive(false);}
         
-        //
-        for(int i=0 ; i < 4; i++){
+        //if there is no any hint it won`t appear
 
-            //adding colors if question is answered
-                if(mistLocal.isAnswered())
-                {
-                    if(i == getAnswer())button[i].GetComponent<Image>().color = new Color32(43,248,80,255); // answer is green
-                    else button[i].GetComponent<Image>().color = new Color32(250,65,65,255); //red 
-                }
-                else
-                {
-                    button[i].GetComponent<Image>().color = new Color32(255,255,255,255); // white button
-                }
-            //
+        if(hasHint())hintImage.SetActive(true);
+        else hintImage.SetActive(false);
+        //answer buttons` color, visibility and text
+        for(byte i=0 ; i < 4; i++)
+        {
+            //button colors
+            button[i].GetComponent<Image>().color = new Color32(255,255,255,255); // white button
 
-            button_text[i].text = buttonText[currentQuestionNumber, i];
+            //button text
+            button_text[i].text = getButtonText(i);
+
+            //button visibility
             if(button_text[i].text == "")button[i].SetActive(false); // button vanishes if it has no text
             else button[i].SetActive(true); // display button if it has content
         }
+        
         Debug.Log("answer : " + getAnswer());
     }
     
-    public static bool isLoaded(){
-        for(byte i =0; i < JsonReadWrite.getMistakes().Count; i++)if(question[i] == null)return false;
-        return true;
-    }
-    public IEnumerator getData(byte i)
+    
+    public IEnumerator getData(byte index)
     {
-        var question = dbRef.Child("Questions" + language.get()).Child(Convert.ToString(JsonReadWrite.getMistakeAt(i))).GetValueAsync();   // 
+        var question = dbRef.Child("Questions" + language.get()).Child(Convert.ToString(index)).GetValueAsync();
 
         yield return new WaitUntil(predicate: () => question.IsCompleted);
 
@@ -119,38 +118,36 @@ public class DBconnector : MonoBehaviour
            // Debug.Log("Q: " + i.ToString() + " with real index: " + Indexes.getIndex(i).ToString());
             DataSnapshot snapshot = question.Result;    //getting snapshot
             //assigning gotten data
-            setAnswer(Convert.ToByte(snapshot.Child("answers").Child("answer").Value.ToString()), i); // assigning answer
-            setQuestion(Convert.ToString(snapshot.Child("question").Value).ToString(), i); // assigning question text   should be CHANGED!!!!
-            setHint(Convert.ToString(snapshot.Child("hint").Value).ToString(), i); // taking hints
+            setAnswer(Convert.ToByte(snapshot.Child("answers").Child("answer").Value.ToString())); // assigning answer
+            setQuestion(Convert.ToString(snapshot.Child("question").Value).ToString()); // assigning question text   should be CHANGED!!!!
+            setHint(Convert.ToString(snapshot.Child("hint").Value).ToString()); // taking hints
+
+            if(snapshot.Child("answers").Child("answer").Value == null){yield return new WaitForSeconds(1);StartCoroutine(getData(index));Debug.LogError($"NULL RETURNED AT {index} at byte answer");}
+            if(snapshot.Child("question").Value == null){yield return new WaitForSeconds(1);StartCoroutine(getData(index));Debug.LogError($"NULL RETURNED AT {index} at question");}
+            if(snapshot.Child("hint").Value == null){yield return new WaitForSeconds(1);StartCoroutine(getData(index));Debug.LogError($"NULL RETURNED AT {index} hint");}
 
             for(byte j=0; j < 4; j++){
-            setButtonText(snapshot.Child("answers").Child(j.ToString()).Value.ToString(), i, j); // setting buttons` texts 
-        
-
+            setButtonText(snapshot.Child("answers").Child(j.ToString()).Value.ToString(), j); // setting buttons` texts 
             //test for collection of data
-            
             }
-            Debug.Log(getQuestion(i));
-            
-                    if(isLoaded()){Debug.Log("DATA IS COLLECTED!!!!");dataIsLoaded = true;removeLoading = true; } // flag of completely loaded data
-
+            Debug.Log(getQuestion());
+            dataIsLoaded = true;removeLoading = true; // flag of completely loaded data
         }
     }
 
     //getters and setters are required since in IEnumberator we cannot use indexes (idk why...)
-    private string getQuestion(byte i){return question[i];}
-    private byte getAnswer(byte i){return answer[i];}
-    public static byte getAnswer(){return answer[entry.currentQuestionNumber];} // some kinda polymorphism for being called from outside
-    private string getButtonText(byte i, byte j){return buttonText[i,j];}
-    private static string getHint(byte i){return hint[i];}
+    private string getQuestion(){return question;}
+    public static byte getAnswer(){return answer;} 
+    private string getButtonText(byte i){return buttonText[i];}
+    private static string getHint(){return hint;}
 
-    private void setButtonText( string str, byte i, byte j){buttonText[i,j] = str;}
-    private void setQuestion(string str, byte i){question[i] = str;}
-    private void setAnswer(byte ans, byte i){answer[i] = ans;}
-    private void setHint(string str, byte i){hint[i] = str;}
+    private void setButtonText(string str, byte j){buttonText[j] = str;}
+    private void setQuestion(string str){question = str;}
+    private void setAnswer(byte ans){answer = ans;}
+    private void setHint(string str){hint = str;}
 
     public static bool hasHint(){
-        if(getHint(changeQuestion.currentQuestionNumber) == "")return false;
+        if(getHint() == "")return false;
         return true;
     }
 

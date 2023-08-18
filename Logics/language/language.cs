@@ -19,8 +19,6 @@ public class language : MonoBehaviour
         // abb should be one of abbreviations above
         if(get() == "")PlayerPrefs.SetString("language","Ru");
         else PlayerPrefs.SetString("language","");
-        
-        Debug.Log("Language: "+ PlayerPrefs.GetString("language"));
 
     }
     public static string get(){

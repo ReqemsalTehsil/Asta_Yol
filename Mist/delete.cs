@@ -1,8 +1,30 @@
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 using UnityEngine;
 
-public class delete : MonoBehaviour
+public class delete : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
+    public GameObject messageBox;
+    private bool startTimeCount;
+    private double timeOfHeldButton;
+    private double t0;
+    void Start()
+    {
+        startTimeCount = false;
+        timeOfHeldButton = 0.0;
+        t0 = 0.0;
+    }
+
+    void Update()
+    {
+        if(startTimeCount)timeOfHeldButton = Time.time - t0;
+        if(timeOfHeldButton >= 1)
+        {
+            messageBox.SetActive(true);
+            timeOfHeldButton = 0.0;
+        }
+    }
+
     public void deleteCurrentMistake()
     {
         JsonReadWrite.mistakeRemove(JsonReadWrite.getMistakes()[entry.currentQuestionNumber]);
@@ -19,17 +41,24 @@ public class delete : MonoBehaviour
         if(entry.currentQuestionNumber != 0 && entry.currentQuestionNumber == JsonReadWrite.getMistakes().Count){Debug.Log("last removed");entry.currentQuestionNumber--;}
         
         
-        Debug.Log($" new question number is {entry.currentQuestionNumber}");
-        DBconnector.updateRequested = true;
+        DBconnector.updateData = true;
     }
 
-    void Update()
+    void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
     {
-   
+        if(!startTimeCount)
+        {
+            t0=Time.time;
+            //Debug.Log(Time.time - t0);
+            startTimeCount = true;
+        }
+       
+        
     }
-
-    public void deleteAllMistakes()
+    
+    void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
     {
-
+        startTimeCount = false;
     }
+    
 }

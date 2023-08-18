@@ -30,6 +30,7 @@ private IEnumerator loading()
 {
     while(!database.removeLoading)
     {
+        //database.requestDataUpload = true; // request each iteration to download data again
         Debug.Log("loading starts");
     firstLoaded(); 
 

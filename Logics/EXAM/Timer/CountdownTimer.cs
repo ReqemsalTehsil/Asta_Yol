@@ -9,6 +9,7 @@ public class CountdownTimer : MonoBehaviour
     private static byte minutes;            // 5 mins are given for the quiz
     private static byte seconds;
     private static bool timeIsStopped;
+    public GameObject failMessage;
     [SerializeField] TextMeshProUGUI countdownText;
 
     public static void Stop(){
@@ -34,5 +35,7 @@ public class CountdownTimer : MonoBehaviour
         
        countdownText.text = string.Format("{0}:{1}{2}", minutes, (seconds<10)? "0":"", seconds);
         }
+
+        if(currentTime <= 0){failMessage.SetActive(true);timeIsStopped = true;} // time is over
     }
 }

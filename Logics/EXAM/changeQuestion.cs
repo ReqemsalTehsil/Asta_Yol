@@ -27,7 +27,8 @@ public class changeQuestion : MonoBehaviour
         
 
         //  IF NOT ANSWERED
-        if(!local.isAnswered(currentQuestionNumber)){
+        if(!local.isAnswered(currentQuestionNumber))
+        {
 
             //hint tip button is removed from screen
             hint.SetActive(false);
@@ -35,19 +36,22 @@ public class changeQuestion : MonoBehaviour
             square[currentQuestionNumber].GetComponent<Image>().color = new Color32(0,0,0,255); //black square
             TextMeshProUGUI tmp_component = square[currentQuestionNumber].GetComponentInChildren<TextMeshProUGUI>();
             tmp_component.color = new Color32(255,255,255,255); // white text
-            for(byte i=0 ; i < 4; i++){
-                    button[i].GetComponent<Image>().color = new Color32(255,255,255,255); // white button
-                }
+            for(byte i=0 ; i < 4; i++)
+            {
+                button[i].GetComponent<Image>().color = new Color32(255,255,255,255); // white button
+            }
         }
-        //IF ANSWERED we don`t change current square
-
-        else{ // 1 - wrong, 2 - right
-
+        //IF ANSWERED we make current square darker
+        else
+        { 
+            if(local.isMistake(currentQuestionNumber))square[currentQuestionNumber].GetComponent<Image>().color = new Color32(176,26,26,255); //dark red
+            else square[currentQuestionNumber].GetComponent<Image>().color = new Color32(22,199,40,255); //dark green
             //hint tip button is generated
-             if(database.hasHint())hint.SetActive(true);
-             else hint.SetActive(false);
+            if(database.hasHint())hint.SetActive(true);
+            else hint.SetActive(false);
             //BUTTONS' COLOR
-            for(byte i=0 ; i < 4; i++){
+            for(byte i=0 ; i < 4; i++)
+            {
                 if(i == database.getAnswer())button[i].GetComponent<Image>().color = new Color32(43,248,80,255); // answer is green
                 else button[i].GetComponent<Image>().color = new Color32(250,65,65,255); //red 
             }
@@ -58,7 +62,8 @@ public class changeQuestion : MonoBehaviour
     public void nextQuestion(byte to_number = 20){ // since 20th question won`t exist we can use it as a flag
         if(to_number == currentQuestionNumber)return;
         
-        if(!local.isAnswered(currentQuestionNumber)){         //if question is unaswered,    we make text again black and white square
+        if(!local.isAnswered(currentQuestionNumber))
+        {         //if question is unaswered,    we make text again black and white square
         
         square[currentQuestionNumber].GetComponent<Image>().color = new Color32(255,255,255,255); // white square
 
@@ -66,14 +71,14 @@ public class changeQuestion : MonoBehaviour
         tmp_component.color = Color.black; //
         }
 
-        //if question is answered, we don`t change anything since onClick we have changeSquareColor()
-
+        //if question is answered, we return it back to whatever colour it had (green/red)
+        else
+        {
+            changeSquareColor();
+        }
         //
         if(to_number == 20)currentQuestionNumber = local.getUnasweredQUestionNumber();
         else currentQuestionNumber = to_number;
-        Debug.Log($"current q number is : {currentQuestionNumber}");
-        Debug.Log($"Total mistakes : {local.mistakes}");
-        Debug.Log($"Total answers : {local.answers}");
         display();
     }
 

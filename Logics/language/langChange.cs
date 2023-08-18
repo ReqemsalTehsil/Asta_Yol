@@ -25,7 +25,6 @@ public class langChange : MonoBehaviour
     }
 
     public void change(){
-        Debug.Log("changing language from " + language.get());
         if(language.get() == ""){
             az_pic.SetActive(true);rus_pic.SetActive(false);
             //after clicking the language is Ru

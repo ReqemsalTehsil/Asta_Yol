@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Collections;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class database : MonoBehaviour
@@ -24,7 +25,6 @@ public class database : MonoBehaviour
     private static byte[] answer = new byte[10];
     private static string[] hint = new string[10];
     //
-
     public static bool updateRequested = false;
     private static DatabaseReference dbRef;
     public static byte numberOfQuestions = 60;
@@ -33,7 +33,6 @@ public class database : MonoBehaviour
     {
 
         //add exam to statistics 
-        PlayerPrefs.SetInt("exams", PlayerPrefs.GetInt("exams", 0) + 1);
 
         //reinitialization
 
@@ -50,7 +49,6 @@ public class database : MonoBehaviour
         
         for(byte i=0; i < 10; i++)
         {
-           
             StartCoroutine(getData(i)); // getting data to fill question, answer, buttonText fields
         }
         
@@ -71,7 +69,7 @@ public class database : MonoBehaviour
             if(button_text[i].text == "")button[i].SetActive(false); // button vanishes if it has no text
             else button[i].SetActive(true); // display button if it has content
         }
-        Debug.Log("answer : " + getAnswer());
+        Debug.Log("answer : " + getAnswer() + "for index: "+ Indexes.getIndex(changeQuestion.currentQuestionNumber));
     }
     
     public static bool isLoaded(){
@@ -89,9 +87,15 @@ public class database : MonoBehaviour
         else{
            
             DataSnapshot snapshot = question.Result;    //getting snapshot
-            //assigning gotten data
-if(snapshot.Child("answers").Child("answer").Value == null || snapshot.Child("question").Value == null || snapshot.Child("hint").Value == null)Debug.LogError($"NULL RETURNED AT {Indexes.getIndex(i)}");
+            
 
+            //test for any bugs in db
+            if(snapshot.Child("answers").Child("answer").Value == null){SceneManager.LoadScene(1); yield return new WaitForSeconds(1);StartCoroutine(getData(i));Debug.LogError($"NULL RETURNED AT {Indexes.getIndex(i)} at byte answer");}
+            if(snapshot.Child("question").Value == null){SceneManager.LoadScene(1);yield return new WaitForSeconds(1);StartCoroutine(getData(i));Debug.LogError($"NULL RETURNED AT {Indexes.getIndex(i)} at question");}
+            if(snapshot.Child("hint").Value == null){SceneManager.LoadScene(1);yield return new WaitForSeconds(1);StartCoroutine(getData(i));Debug.LogError($"NULL RETURNED AT {Indexes.getIndex(i)} hint");}
+
+
+            //assigning gotten data
             setAnswer(Convert.ToByte(snapshot.Child("answers").Child("answer").Value.ToString()), i); // assigning answer
             setQuestion(Convert.ToString(snapshot.Child("question").Value).ToString(), i); // assigning question text   should be CHANGED!!!!
             setHint(Convert.ToString(snapshot.Child("hint").Value).ToString(), i); // taking hints

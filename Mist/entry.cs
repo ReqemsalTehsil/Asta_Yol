@@ -3,32 +3,30 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 public class entry : MonoBehaviour
-{
-    public static bool rightIsClicked,leftIsClicked;
-    public static bool answerIsGiven;
-    public static byte clickedAnswer;   
+{   
+    public static bool rightIsClicked,leftIsClicked,answerIsClicked;
     public GameObject hint;
-    public static bool buttonIsClicked = false;
     public GameObject[] button = new GameObject[4];
     public static byte currentQuestionNumber; // range: from 0 to 9
     
     void Start(){
         currentQuestionNumber = 0;
-        answerIsGiven = false;
+        answerIsClicked =false;
         rightIsClicked = false;
         leftIsClicked = false;
     }
     
-    public void display()
+    public void showAnswers()
     {
-        Debug.Log("at display");
-        DBconnector.updateRequested = true; // update info on question.text, button_text
-        
-        
-        
+        for(byte i = 0; i < 4; i++)
+        {
+        if(i == DBconnector.getAnswer())button[i].GetComponent<Image>().color = new Color32(43,248,80,255); // answer is green
+        else button[i].GetComponent<Image>().color = new Color32(250,65,65,255); //red 
+        }
     }
    
-    public void nextQuestion(bool right){ // since 20th question won`t exist we can use it as a flag
+    public void nextQuestion(bool right)
+    {
         if(right)
         {
             currentQuestionNumber++;
@@ -37,16 +35,14 @@ public class entry : MonoBehaviour
         {
             currentQuestionNumber--;
         }
-        display();
+        
+        DBconnector.updateData = true;
     }
 
     public void Update(){
-        if(DBconnector.dataIsLoaded){display();DBconnector.dataIsLoaded = false;} // evertrhing appears as all data is loaded from database 
-        if(answerIsGiven)
-        {    display();
-            answerIsGiven = false;
-        }
-        if(rightIsClicked){ nextQuestion(true); rightIsClicked = false;}
+         
+        if(answerIsClicked){ showAnswers();answerIsClicked = false;}
+        if(rightIsClicked){ nextQuestion(true); rightIsClicked = false; }
         if(leftIsClicked){ nextQuestion(false); leftIsClicked = false; }
     }
 }

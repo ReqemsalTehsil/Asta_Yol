@@ -1,9 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class hint : MonoBehaviour
 {
+    public TextMeshProUGUI hint_text;
     public GameObject box;
     public GameObject hint_on_image; // to put hint_on image over hint image
     public void showBox()

@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class loadScriptMist : MonoBehaviour
 {
-    public GameObject firstLoadingPic;
-    public GameObject secondLoadingPic;
-    public GameObject thirdLoadingPic;
+    public Image image;
+    public GameObject objectImage;
     public GameObject loadingObj;
     public GameObject rubbishBin;
 
@@ -16,8 +16,8 @@ public class loadScriptMist : MonoBehaviour
     {
         DBconnector.removeLoading = false;
         DBconnector.dataIsLoaded = false;
-
-        rubbishBin.SetActive(false);
+        objectImage.SetActive(true);
+        
         
         Debug.Log("loading starts");
         StartCoroutine(loading());
@@ -32,40 +32,16 @@ private IEnumerator loading()
     while(!DBconnector.removeLoading)
     {
         Debug.Log("loading starts");
-    firstLoaded(); 
-
-    yield return new WaitForSeconds(0.5f);
-
-    secondLoaded();
-
-    yield return new WaitForSeconds(0.5f);
-
-    thirdLoaded();
-
-    yield return new WaitForSeconds(0.5f);
+        
+        for(int i = 1; i < 38; i++)
+        {
+            image.sprite = Resources.Load<Sprite>("mistakes_scene/" + i );
+            yield return new WaitForSeconds(0.02f);
+        }
+     
     }
-    allLoaded();
+   
+    objectImage.SetActive(false);    
 }
 
-private void firstLoaded()
-{
-    firstLoadingPic.SetActive(true);
-    secondLoadingPic.SetActive(false);
-    thirdLoadingPic.SetActive(false);
-}
-private void secondLoaded()
-{
-    firstLoadingPic.SetActive(false);
-    secondLoadingPic.SetActive(true);
-}
-private void thirdLoaded()
-{
-    secondLoadingPic.SetActive(false);
-    thirdLoadingPic.SetActive(true);
-}
-private void allLoaded()
-{
-    loadingObj.SetActive(false);
-    rubbishBin.SetActive(true);
-}
 }
